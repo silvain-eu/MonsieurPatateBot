@@ -36,7 +36,9 @@ async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
         list = ''
         for game in games:
             list += game.emoticon + " : " + game.name + "\n"
-        embed.add_field(name="List des sections :", value=list, inline=False)
+
+        if list != '':
+            embed.add_field(name="List des sections :", value=list, inline=False)
 
         if msg is not None:
             await msg.edit(embed=embed)

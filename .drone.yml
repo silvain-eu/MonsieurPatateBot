@@ -7,6 +7,10 @@ steps:
   - name: docker
     image: plugins/docker
     settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
       insecure: false
       repo: registry.silvain.eu:5000/monsieurpatatebot
       registry: registry.silvain.eu:5000

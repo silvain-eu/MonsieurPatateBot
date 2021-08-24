@@ -12,7 +12,7 @@ steps:
       password:
         from_secret: docker_password
       insecure: false
-      repo: registry.silvain.eu:5000/monsieurpatatebot
+      repo: registry.silvain.eu:5000/silvain/monsieurpatatebot
       registry: registry.silvain.eu:5000
       tags:
         - latest

@@ -1,0 +1,19 @@
+---
+kind: pipeline
+type: docker
+name: Build
+
+steps:
+  - name: docker
+    image: plugins/docker
+    settings:
+      insecure: false
+      repo: monsieurpatatebot
+      registry: registry.silvain.eu:5000
+      tags:
+        - latest
+
+
+trigger:
+  branch:
+    - master

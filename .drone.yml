@@ -12,8 +12,3 @@ steps:
       registry: registry.silvain.eu:5000
       tags:
         - latest
-
-
-trigger:
-  branch:
-    - master

@@ -8,7 +8,7 @@ steps:
     image: plugins/docker
     settings:
       insecure: false
-      repo: monsieurpatatebot
+      repo: registry.silvain.eu:5000/monsieurpatatebot
       registry: registry.silvain.eu:5000
       tags:
         - latest

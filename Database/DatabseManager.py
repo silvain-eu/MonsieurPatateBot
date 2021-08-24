@@ -56,7 +56,7 @@ class Migration(object):
         dbConn.commit()
 
 
-def connect(db: str = "potatoes.db"):
+def connect(db: str = "Data/potatoes.db"):
     dbConn = sqlite3.connect(db)
 
     c = dbConn.cursor()

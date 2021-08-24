@@ -1,3 +1,5 @@
 venv
 potatoes.db
 .env.local
+Data/
+!Data/.gitignore

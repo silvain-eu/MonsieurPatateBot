@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  nginx:
+    image: registry.silvain.eu:5000/silvain/monsieurpatatebot:latest$
+    environment:
+      - token=
+      - clientId=
+      - voiceCategoryName=Salons vocaux
+    volumes:
+      - ./Data:/usr/src/app/Data

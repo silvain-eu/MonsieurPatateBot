@@ -16,6 +16,7 @@ class Game(Database.DatabseManager.DataBaseObject):
     memberIdCreate: str
     memberUsernameCreate: str
     emoticon: str
+    restricted: bool = False
 
     @staticmethod
     def create(game):
@@ -23,9 +24,9 @@ class Game(Database.DatabseManager.DataBaseObject):
         c = dbConn.cursor()
         game.dateCreate = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         c.execute(
-            "INSERT INTO Game(name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate,emoticon) values (?,?,?,?,?,?,?,?);"
+            "INSERT INTO Game(name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate,emoticon,restricted) values (?,?,?,?,?,?,?,?,?);"
             , (game.name, game.guildId, game.categoryId, game.roleId, game.dateCreate, game.memberIdCreate,
-               game.memberUsernameCreate, game.emoticon))
+               game.memberUsernameCreate, game.emoticon, game.restricted))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
 
@@ -44,7 +45,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon from Game;")
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon, restricted from Game;")
         dbConn.commit()
 
         rows = c.fetchall()
@@ -59,7 +60,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon from Game where guildId = ?;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted from Game where guildId = ?;",
             (guildId,))
         dbConn.commit()
 
@@ -75,7 +76,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon from Game where guildId = ? and emoticon = ? limit 1;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted from Game where guildId = ? and emoticon = ? limit 1;",
             (guildId, emoticon,))
         dbConn.commit()
 
@@ -90,7 +91,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon from Game where name like ? and guildId = ? limit 1;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted from Game where name like ? and guildId = ? limit 1;",
             (name, str(guild),))
         dbConn.commit()
 
@@ -112,5 +113,6 @@ class Game(Database.DatabseManager.DataBaseObject):
         res.memberIdCreate = data[6]
         res.memberUsernameCreate = data[7]
         res.emoticon = data[8]
+        res.restricted = data[9]
 
         return res

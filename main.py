@@ -5,11 +5,12 @@ from discord.ext import commands
 from discord_slash import SlashCommand
 from dotenv import load_dotenv
 
+from Database.GameRoleAllow import GameRoleAllow
 from Utils import VoiceChannel
 from Commands import ReloadGameCommand
 from Database.AnnounceChannel import AnnounceChannel
 from Database.Games import Game
-from Database.DatabseManager import connect,disconnect
+from Database.DatabseManager import connect, disconnect
 
 load_dotenv()
 TOKEN = os.getenv('token')
@@ -18,7 +19,7 @@ intents = discord.Intents().default()
 intents.members = True
 intents.reactions = True
 
-client = commands.Bot(command_prefix="!", intent=intents, help_command=None)
+client = commands.Bot(command_prefix="p", intent=intents, help_command=None)
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True, override_type=True,
                      application_id=876096685892325376)
 
@@ -55,6 +56,10 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         return
 
     role: discord.Role = guild.get_role(int(game.roleId))
+    if game.restricted and GameRoleAllow.findOneByGameRole(game.id, role.id) is None:
+        await msg.remove_reaction(payload.emoji, user)
+        return
+
     await user.add_roles(role)
 
 

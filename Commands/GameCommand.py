@@ -33,7 +33,7 @@ class GameCommand(commands.Cog):
             )
         ])
     async def allowusercmd(self, ctx: SlashContext, user: discord.User = None, remove: bool = False):
-        if ctx.author == ctx.guild.owner:
+        if ctx.author_id != ctx.guild.owner_id:
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
 
         if user is None:

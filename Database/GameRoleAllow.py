@@ -35,7 +35,7 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GameId, RoleId from GameRoleAllow;",)
+            "select GameId, RoleId from GameRoleAllow;", )
         dbConn.commit()
 
         rows = c.fetchall()
@@ -68,6 +68,21 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         c.execute(
             "select GameId, RoleId from GameRoleAllow where GameId = ? and RoleId = ?;",
             (GameId, RoleId,))
+        dbConn.commit()
+
+        res = c.fetchone()
+        if res is None:
+            return None
+        Database.DatabseManager.disconnect(dbConn)
+        return GameRoleAllow.serialize(res)
+
+    @staticmethod
+    def findOneByGameRolesList(GameId: int, RoleId: typing.List[str]):
+        dbConn = Database.DatabseManager.connect()
+        c = dbConn.cursor()
+        c.execute(
+            "select GameId, RoleId from GameRoleAllow where GameId = ? and RoleId in ('" + "','".join(RoleId) + "');",
+            (GameId,))
         dbConn.commit()
 
         res = c.fetchone()

@@ -56,9 +56,13 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         return
 
     role: discord.Role = guild.get_role(int(game.roleId))
-    if game.restricted and GameRoleAllow.findOneByGameRole(game.id, role.id) is None:
-        await msg.remove_reaction(payload.emoji, user)
-        return
+    if game.restricted:
+        listRole = []
+        for r in user.roles:
+            listRole.append(str(r.id))
+        if GameRoleAllow.findOneByGameRolesList(game.id, listRole) is None:
+            await msg.remove_reaction(payload.emoji, user)
+            return
 
     await user.add_roles(role)
 

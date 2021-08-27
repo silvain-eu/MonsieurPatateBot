@@ -113,6 +113,6 @@ class Game(Database.DatabseManager.DataBaseObject):
         res.memberIdCreate = data[6]
         res.memberUsernameCreate = data[7]
         res.emoticon = data[8]
-        res.restricted = data[9]
+        res.restricted = data[9] == 1
 
         return res

@@ -156,7 +156,7 @@ class GameCommand(commands.Cog):
 
         await ctx.send(content=("[AddGame] OK !."), hidden=True)
 
-    @cog_ext.cog_slash(name="addgame", description="ajout d un jeux", options=[
+    @cog_ext.cog_slash(name="addsection", description="ajout d un jeux", options=[
         create_option(
             name="name",
             description="nom du jeux",
@@ -183,12 +183,18 @@ class GameCommand(commands.Cog):
             option_type=SlashCommandOptionType.BOOLEAN,
 
             required=False
+        ), create_option(
+            name="show",
+            description="show",
+            option_type=SlashCommandOptionType.BOOLEAN,
+            required=False
         )
     ])
-    async def addgame(self, ctx: SlashContext, name: str, emoticon: str,
-                      category: typing.Union[discord.CategoryChannel, discord.VoiceChannel, discord.TextChannel] = None,
-                      role: discord.Role = None, restricted: bool = False
-                      ):
+    async def addsection(self, ctx: SlashContext, name: str, emoticon: str,
+                         category: typing.Union[
+                             discord.CategoryChannel, discord.VoiceChannel, discord.TextChannel] = None,
+                         role: discord.Role = None, restricted: bool = False, show: bool = False
+                         ):
 
         if AllowUserCommand.accessDeniedUser(ctx.author_id):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
@@ -205,12 +211,13 @@ class GameCommand(commands.Cog):
         game.memberIdCreate = ctx.author.id
         game.memberUsernameCreate = ctx.author.name
         game.restricted = restricted
+        game.show = show
 
         guild: discord.Guild = ctx.guild
         game.guildId = guild.id
 
         if category == None:
-            category: discord.CategoryChannel = await guild.create_category(name)
+            category: discord.CategoryChannel = await guild.create_category(emoticon + " " + name)
         elif category.type != discord.ChannelType.category:
             await ctx.send(content=("[AddGame] " + category.name + " n'est pas une category."), hidden=True)
             return
@@ -238,7 +245,7 @@ class GameCommand(commands.Cog):
         await ctx.send(content=("Ok ! <@&" + str(role.id) + ">"), hidden=True)
         await ReloadGameCommand.reloadChannelAnnounce(guild)
 
-    @cog_ext.cog_slash(name="removegame", description="delete a game", options=[
+    @cog_ext.cog_slash(name="removesection", description="delete a game", options=[
         create_option(
             name="name",
             description="nom du jeux",
@@ -252,7 +259,7 @@ class GameCommand(commands.Cog):
             required=False
         )
     ])
-    async def removegame(self, ctx: SlashContext, name: str, delete : bool = False):
+    async def removesection(self, ctx: SlashContext, name: str, delete: bool = False):
 
         if AllowUserCommand.accessDeniedUser(ctx.author_id):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)

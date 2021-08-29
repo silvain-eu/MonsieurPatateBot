@@ -193,7 +193,7 @@ class GameCommand(commands.Cog):
     async def addsection(self, ctx: SlashContext, name: str, emoticon: str,
                          category: typing.Union[
                              discord.CategoryChannel, discord.VoiceChannel, discord.TextChannel] = None,
-                         role: discord.Role = None, restricted: bool = False, show: bool = False
+                         role: discord.Role = None, restricted: bool = False, show: bool = True
                          ):
 
         if AllowUserCommand.accessDeniedUser(ctx.author_id):

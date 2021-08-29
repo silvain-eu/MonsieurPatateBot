@@ -112,15 +112,15 @@ class ReloadGameCommand(commands.Cog):
             announce.AnnounceChannelId = channel.id
             AnnounceChannel.update(announce)
 
-        perm: discord.PermissionOverwrite = discord.PermissionOverwrite(manage_channels=True, view_channel=True,
-                                                                        read_messages=True,
-                                                                        send_messages=True)
-        await channel.set_permissions(self.bot.user, overwrite=perm)
-
-        perm = discord.PermissionOverwrite(manage_channels=False, view_channel=True,
-                                           read_messages=True,
-                                           send_messages=False, read_message_history=True)
-        await channel.set_permissions(ctx.guild.default_role, overwrite=perm)
+        # perm: discord.PermissionOverwrite = discord.PermissionOverwrite(manage_channels=True, view_channel=True,
+        #                                                                 read_messages=True,
+        #                                                                 send_messages=True)
+        # await channel.set_permissions(self.bot.user, overwrite=perm)
+        #
+        # perm = discord.PermissionOverwrite(manage_channels=False, view_channel=True,
+        #                                    read_messages=True,
+        #                                    send_messages=False, read_message_history=True)
+        # # await channel.set_permissions(ctx.guild.default_role, overwrite=perm)
 
         await reloadChannelAnnounce(ctx.guild, True)
         await ctx.send("Fait ! Nouveau channel d'annonce !!", hidden=True)

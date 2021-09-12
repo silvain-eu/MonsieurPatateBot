@@ -15,4 +15,4 @@ ENV token ""
 ENV clientId ""
 ENV voiceCategoryName "Salons vocaux"
 
-CMD [ "python", "./main.py" ]
+CMD [ "python", "-u", "./main.py" ]

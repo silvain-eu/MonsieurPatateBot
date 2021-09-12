@@ -18,6 +18,7 @@ class Game(Database.DatabseManager.DataBaseObject):
     emoticon: str
     restricted: bool = False
     show: bool = True
+    AnnounceChannelId: str = None
 
     @staticmethod
     def create(game):
@@ -25,9 +26,9 @@ class Game(Database.DatabseManager.DataBaseObject):
         c = dbConn.cursor()
         game.dateCreate = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         c.execute(
-            "INSERT INTO Game(name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate,emoticon,restricted, show) values (?,?,?,?,?,?,?,?,?,?);"
+            "INSERT INTO Game(name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate,emoticon,restricted, show,AnnounceChannelId) values (?,?,?,?,?,?,?,?,?,?,?);"
             , (game.name, game.guildId, game.categoryId, game.roleId, game.dateCreate, game.memberIdCreate,
-               game.memberUsernameCreate, game.emoticon, game.restricted, game.show))
+               game.memberUsernameCreate, game.emoticon, game.restricted, game.show, game.AnnounceChannelId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
 
@@ -46,7 +47,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon, restricted, show from Game;")
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon, restricted, show,AnnounceChannelId from Game;")
         dbConn.commit()
 
         rows = c.fetchall()
@@ -57,11 +58,26 @@ class Game(Database.DatabseManager.DataBaseObject):
         return res
 
     @staticmethod
+    def findOneByGuildAndCategory(guildId: str, CategoryId: str):
+        dbConn = Database.DatabseManager.connect()
+        c = dbConn.cursor()
+        c.execute(
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show,AnnounceChannelId from Game where guildId = ? and categoryId = ?;",
+            (guildId, CategoryId,))
+        dbConn.commit()
+
+        res = c.fetchone()
+        if res is None:
+            return None
+        Database.DatabseManager.disconnect(dbConn)
+        return Game.serialize(res)
+
+    @staticmethod
     def findByGuild(guildId: str):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show from Game where guildId = ? and show = 1;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show,AnnounceChannelId from Game where guildId = ? and show = 1;",
             (guildId,))
         dbConn.commit()
 
@@ -77,7 +93,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show from Game where guildId = ? and emoticon = ? limit 1;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show,AnnounceChannelId from Game where guildId = ? and emoticon = ? limit 1;",
             (guildId, emoticon,))
         dbConn.commit()
 
@@ -92,7 +108,7 @@ class Game(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show from Game where name like ? and guildId = ? limit 1;",
+            "select id, name, guildId, categoryId, roleId, dateCreate, memberIdCreate, memberUsernameCreate, emoticon,restricted,show,AnnounceChannelId from Game where name like ? and guildId = ? limit 1;",
             (name, str(guild),))
         dbConn.commit()
 
@@ -101,6 +117,17 @@ class Game(Database.DatabseManager.DataBaseObject):
             return None
         Database.DatabseManager.disconnect(dbConn)
         return Game.serialize(res)
+
+    @staticmethod
+    def update(game):
+        dbConn = Database.DatabseManager.connect();
+        c = dbConn.cursor()
+        c.execute(
+            "update Game Set name = ?, guildId = ?, categoryId = ?, roleId = ?, dateCreate = ?, memberIdCreate = ?, memberUsernameCreate = ?,emoticon = ?,restricted = ?, show = ?,AnnounceChannelId = ? where id = ?;"
+            , (game.name, game.guildId, game.categoryId, game.roleId, game.dateCreate, game.memberIdCreate,
+               game.memberUsernameCreate, game.emoticon, game.restricted, game.show, game.AnnounceChannelId, game.id,))
+        dbConn.commit()
+        Database.DatabseManager.disconnect(dbConn)
 
     @staticmethod
     def serialize(data):
@@ -116,5 +143,6 @@ class Game(Database.DatabseManager.DataBaseObject):
         res.emoticon = data[8]
         res.restricted = data[9] == 1
         res.show = data[10] == 1
+        res.AnnounceChannelId = data[11]
 
         return res

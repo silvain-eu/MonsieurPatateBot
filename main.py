@@ -11,6 +11,7 @@ from Commands import ReloadGameCommand
 from Database.AnnounceChannel import AnnounceChannel
 from Database.Games import Game
 from Database.DatabseManager import connect, disconnect
+from Utils.AnnounceGameChannel import autoCreateSectionAnnounceChannel, on_announce_game_message
 
 load_dotenv()
 TOKEN = os.getenv('token')
@@ -19,20 +20,21 @@ intents = discord.Intents().default()
 intents.members = True
 intents.reactions = True
 
-client = commands.Bot(command_prefix="p", intent=intents, help_command=None)
+client = commands.Bot(command_prefix="!", intent=intents, help_command=None)
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True, override_type=True,
-                     application_id=876096685892325376)
+                     application_id=os.getenv("clientId"))
 
 
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
-    # await slash.sync_all_commands(delete_from_unused_guilds=False)
+    await slash.sync_all_commands(delete_from_unused_guilds=False)
     disconnect(connect())
     VoiceChannel.vocalCategory.start(client)
     await client.change_presence(activity=discord.Game(name="faire de frites", type=discord.ActivityType.playing))
     await ReloadGameCommand.reloadAllChannelAnnounce(client)
+    # await autoCreateSectionAnnounceChannel(client)
 
 
 @client.event
@@ -85,6 +87,12 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
     await user.remove_roles(role)
 
 
+@client.event
+async def on_message(message: discord.Message):
+    await on_announce_game_message(message)
+
+
 client.load_extension("Commands.GameCommand")
 client.load_extension("Commands.ReloadGameCommand")
+client.load_extension("Commands.AnnounceMessageCommand")
 client.run(TOKEN)

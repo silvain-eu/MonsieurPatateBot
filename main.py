@@ -32,7 +32,7 @@ async def on_ready():
     await slash.sync_all_commands(delete_from_unused_guilds=False)
     disconnect(connect())
     VoiceChannel.vocalCategory.start(client)
-    await client.change_presence(activity=discord.Game(name="faire de frites", type=discord.ActivityType.playing))
+    await client.change_presence(activity=discord.Game(name="faire des frites", type=discord.ActivityType.playing))
     await ReloadGameCommand.reloadAllChannelAnnounce(client)
     # await autoCreateSectionAnnounceChannel(client)
 

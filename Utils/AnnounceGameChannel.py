@@ -46,7 +46,7 @@ async def on_announce_game_message(message: discord.Message, onlyAnnounceChannel
     game: Game = Game.findOneByGuildAndCategory(message.guild.id, ch.category_id)
     if game is not None:
         if onlyAnnounceChannel:
-            if game.AnnounceChannelId is None and ch.name.contains("annonce"):
+            if game.AnnounceChannelId is None and "annonce" in ch.name:
                 game.AnnounceChannelId = str(ch.id)
                 Game.update(game)
             if game.AnnounceChannelId is None or game.AnnounceChannelId != str(ch.id):

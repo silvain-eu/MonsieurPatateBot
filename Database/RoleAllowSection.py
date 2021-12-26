@@ -6,7 +6,7 @@ import Database.DatabseManager
 from datetime import datetime
 
 
-class GameRoleAllow(Database.DatabseManager.DataBaseObject):
+class RoleAllowSection(Database.DatabseManager.DataBaseObject):
     GameId: int
     RoleId: str
 
@@ -15,7 +15,7 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "INSERT INTO GameRoleAllow(GameId, RoleId) values (?,?);"
+            "INSERT INTO role_allow_section(SectionId, role_id) values (%s,%s);"
             , (game.GameId, game.RoleId))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
@@ -25,7 +25,7 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "delete from GameRoleAllow where GameId = ? and RoleId = ?;"
+            "delete from role_allow_section where SectionId = %s and role_id = %s;"
             , (game.GameId, game.RoleId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
@@ -35,13 +35,12 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GameId, RoleId from GameRoleAllow;", )
-        dbConn.commit()
+            "select SectionId, role_id from role_allow_section;", )
 
         rows = c.fetchall()
         res = []
         for row in rows:
-            res.append(GameRoleAllow.serialize(row))
+            res.append(RoleAllowSection.serialize(row))
         Database.DatabseManager.disconnect(dbConn)
         return res
 
@@ -50,14 +49,13 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GameId, RoleId from GameRoleAllow where GameId = ?;",
+            "select SectionId, role_id from role_allow_section where SectionId = %s;",
             (gameId,))
-        dbConn.commit()
 
         rows = c.fetchall()
         res = []
         for row in rows:
-            res.append(GameRoleAllow.serialize(row))
+            res.append(RoleAllowSection.serialize(row))
         Database.DatabseManager.disconnect(dbConn)
         return res
 
@@ -66,34 +64,34 @@ class GameRoleAllow(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GameId, RoleId from GameRoleAllow where GameId = ? and RoleId = ?;",
+            "select SectionId, role_id from role_allow_section where SectionId = %s and role_id = %s;",
             (GameId, RoleId,))
-        dbConn.commit()
 
         res = c.fetchone()
         if res is None:
             return None
         Database.DatabseManager.disconnect(dbConn)
-        return GameRoleAllow.serialize(res)
+        return RoleAllowSection.serialize(res)
 
     @staticmethod
     def findOneByGameRolesList(GameId: int, RoleId: typing.List[str]):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GameId, RoleId from GameRoleAllow where GameId = ? and RoleId in ('" + "','".join(RoleId) + "');",
+            "select SectionId, role_id from role_allow_section "
+            " where SectionId = %s and role_id in ('" + "','".join(
+                RoleId) + "');",
             (GameId,))
-        dbConn.commit()
 
         res = c.fetchone()
         if res is None:
             return None
         Database.DatabseManager.disconnect(dbConn)
-        return GameRoleAllow.serialize(res)
+        return RoleAllowSection.serialize(res)
 
     @staticmethod
     def serialize(data):
-        res = GameRoleAllow()
+        res = RoleAllowSection()
         res.GameId = data[0]
         res.RoleId = data[1]
 

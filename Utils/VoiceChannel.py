@@ -3,7 +3,7 @@ import typing
 import discord
 from discord.ext import tasks
 
-from Database.Games import Game
+from Database.Games import Section
 
 
 async def updateVoiceChannel(chs: typing.List[discord.VoiceChannel]):
@@ -49,7 +49,7 @@ async def vocalCategory(client: discord.Client):
 
         await updateVoiceChannel(chs)
 
-    games: typing.List[Game] = Game.findAll()
+    games: typing.List[Section] = Section.findAll()
     for game in games:
         g: discord.Guild = client.get_guild(int(game.guildId))
         chs: typing.List[discord.VoiceChannel] = []

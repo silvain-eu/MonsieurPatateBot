@@ -8,12 +8,12 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashCommandOptionType, SlashContext
 from discord_slash.utils.manage_commands import create_option
 
-from Database.AnnounceChannel import AnnounceChannel
-from Database.Games import Game
+from Database.GuildSettings import GuildSettings
+from Database.Games import Section
 
 
 async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
-    announceChannel: AnnounceChannel = AnnounceChannel.findOne(g.id)
+    announceChannel: GuildSettings = GuildSettings.findOne(g.id)
     if announceChannel is not None:
         channel: discord.TextChannel = g.get_channel(int(announceChannel.AnnounceChannelId))
 
@@ -22,7 +22,7 @@ async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
             await channel.purge(limit=sys.maxsize)
         else:
             try:
-                msg = await channel.fetch_message(int(announceChannel.GameMessageId))
+                msg = await channel.fetch_message(int(announceChannel.SectionMessageId))
             except:
                 msg = None
 
@@ -32,7 +32,7 @@ async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
         # embed.set_author(name="Monsieur Patate",
         #                  icon_url="https://cdn.discordapp.com/avatars/876096685892325376/8b81d5f2d0970e9cc521dcf99978dc48.png?size=128")
 
-        games: typing.List[Game] = Game.findByGuild(g.id)
+        games: typing.List[Section] = Section.findByGuild(g.id)
         list = ''
         for game in games:
             list += game.emoticon + " : " + game.name + "\n"
@@ -46,7 +46,7 @@ async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
             msg = await channel.send(embed=embed)
 
         for r in msg.reactions:
-            game: Game = Game.findOneByGuildEmoticon(g.id, r.emoji)
+            game: Section = Section.findOneByGuildEmoticon(g.id, r.emoji)
             if game is None:
                 async for user in r.users():
                     if os.getenv("clientId") == str(user.id):
@@ -55,8 +55,8 @@ async def reloadChannelAnnounce(g: discord.Guild, clear: bool = False):
         for game in games:
             await msg.add_reaction(game.emoticon)
 
-        announceChannel.GameMessageId = msg.id
-        AnnounceChannel.update(announceChannel)
+        announceChannel.SectionMessageId = msg.id
+        GuildSettings.update(announceChannel)
 
 
 async def reloadAllChannelAnnounce(client: discord.Client):
@@ -92,25 +92,25 @@ class ReloadGameCommand(commands.Cog):
         else:
             channel = ctx.channel
 
-        announce: AnnounceChannel = AnnounceChannel.findOne(ctx.guild.id)
+        announce: GuildSettings = GuildSettings.findOne(ctx.guild.id)
 
         if announce is None:
-            announce = AnnounceChannel()
+            announce = GuildSettings()
             announce.GuildId = ctx.guild_id
             announce.AnnounceChannelId = channel.id
-            AnnounceChannel.create(announce)
+            GuildSettings.create(announce)
         else:
             if announce.AnnounceChannelId != channel.id:
                 try:
                     lastChannel: discord.TextChannel = ctx.guild.get_channel(int(announce.AnnounceChannelId))
-                    msg: discord.Message = await lastChannel.fetch_message(int(announce.GameMessageId))
+                    msg: discord.Message = await lastChannel.fetch_message(int(announce.SectionMessageId))
                     await msg.delete()
                 except:
                     ...
-                announce.GameMessageId = None
+                announce.SectionMessageId = None
 
             announce.AnnounceChannelId = channel.id
-            AnnounceChannel.update(announce)
+            GuildSettings.update(announce)
 
         # perm: discord.PermissionOverwrite = discord.PermissionOverwrite(manage_channels=True, view_channel=True,
         #                                                                 read_messages=True,

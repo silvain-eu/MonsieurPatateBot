@@ -14,7 +14,7 @@ class AllowUserCommand(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "INSERT INTO AllowUserCommand(MemberId) values (?);"
+            "INSERT INTO allow_user_command(member_id) values (%s);"
             , (game.MemberId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
@@ -24,7 +24,7 @@ class AllowUserCommand(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "delete from AllowUserCommand where MemberId = ?;"
+            "delete from allow_user_command where member_id = %s;"
             , (game.MemberId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
@@ -34,8 +34,7 @@ class AllowUserCommand(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select MemberId from AllowUserCommand;", )
-        dbConn.commit()
+            "select member_id from allow_user_command;", )
 
         rows = c.fetchall()
         res = []
@@ -49,9 +48,8 @@ class AllowUserCommand(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select MemberId from AllowUserCommand where MemberId = ?;",
+            "select member_id from allow_user_command where member_id = %s;",
             (userId,))
-        dbConn.commit()
 
         res = c.fetchone()
         if res is None:

@@ -7,7 +7,7 @@ from discord_slash.utils.manage_commands import create_option
 
 from Commands import ReloadGameCommand
 from Database.AllowUserCommand import AllowUserCommand
-from Database.Games import Game
+from Database.Games import Section
 from Utils.AnnounceGameChannel import on_announce_game_message
 
 
@@ -36,7 +36,7 @@ class AnnounceMessageCommand(commands.Cog):
             await ctx.send(content=("ERROR : Message non trouvé !!!"), hidden=True)
             return
 
-        game: Game = Game.findOneByGuildAndCategory(ctx.guild_id, channel.category_id)
+        game: Section = Section.findOneByGuildAndCategory(ctx.guild_id, channel.category_id)
         if game is None:
             await ctx.send(content=("ERROR : Aucune section pour ce message !!!"), hidden=True)
             return

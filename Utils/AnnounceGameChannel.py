@@ -5,11 +5,11 @@ from discord.ext import commands
 from discord_slash import cog_ext, SlashCommandOptionType, SlashContext
 from discord_slash.utils.manage_commands import create_option
 
-from Database.Games import Game
+from Database.Games import Section
 
 
 async def autoCreateSectionAnnounceChannel(client: discord.Client):
-    games: typing.List[Game] = Game.findAll()
+    games: typing.List[Section] = Section.findAll()
     for game in games:
         g: discord.Guild = client.get_guild(int(game.guildId))
 
@@ -32,23 +32,23 @@ async def autoCreateSectionAnnounceChannel(client: discord.Client):
                                                                           sync_permissions=True)
 
                 game.AnnounceChannelId = ch.id
-                Game.update(game)
+                Section.update(game)
 
 
 async def on_announce_game_message(message: discord.Message, onlyAnnounceChannel: bool = True):
     if message.author.bot:
         if message.type == discord.MessageType.pins_add:
-            game: Game = Game.findOneByGuildAndCategory(message.guild.id, message.channel.category_id)
+            game: Section = Section.findOneByGuildAndCategory(message.guild.id, message.channel.category_id)
             if game is not None:
                 await message.delete()
         return
     ch: discord.TextChannel = message.channel
-    game: Game = Game.findOneByGuildAndCategory(message.guild.id, ch.category_id)
+    game: Section = Section.findOneByGuildAndCategory(message.guild.id, ch.category_id)
     if game is not None:
         if onlyAnnounceChannel:
             if game.AnnounceChannelId is None and "annonce" in ch.name:
                 game.AnnounceChannelId = str(ch.id)
-                Game.update(game)
+                Section.update(game)
             if game.AnnounceChannelId is None or game.AnnounceChannelId != str(ch.id):
                 return
         else:

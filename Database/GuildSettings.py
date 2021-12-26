@@ -1,18 +1,18 @@
 import Database.DatabseManager
 
 
-class AnnounceChannel(Database.DatabseManager.DataBaseObject):
+class GuildSettings(Database.DatabseManager.DataBaseObject):
     GuildId: str
     AnnounceChannelId: str
-    GameMessageId: str = None
+    SectionMessageId: str = None
 
     @staticmethod
     def create(announceChannel):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "INSERT INTO AnnounceChannel(GuidId,AnnounceChannelId, GameMessageId) values (?,?,?);"
-            , (announceChannel.GuildId, announceChannel.AnnounceChannelId, announceChannel.GameMessageId,))
+            "INSERT INTO guild_settings(GuildId,announce_channel_id, section_message_id) values (?,?,?);"
+            , (announceChannel.GuildId, announceChannel.AnnounceChannelId, announceChannel.SectionMessageId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
 
@@ -21,33 +21,26 @@ class AnnounceChannel(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "update AnnounceChannel Set AnnounceChannelId = ?, GameMessageId = ? where GuidId =?"
-            , (announceChannel.AnnounceChannelId, announceChannel.GameMessageId, announceChannel.GuildId,))
+            "update guild_settings Set announce_channel_id = %s, section_message_id = %s where GuildId =%s"
+            , (announceChannel.AnnounceChannelId, announceChannel.SectionMessageId, announceChannel.GuildId,))
         dbConn.commit()
         Database.DatabseManager.disconnect(dbConn)
 
     @staticmethod
     def delete(announceChannel):
-        dbConn = Database.DatabseManager.connect()
-        c = dbConn.cursor()
-        c.execute(
-            "delete from AnnounceChannel where GuidId = ?;"
-            , (announceChannel.GuildId,))
-        dbConn.commit()
-        Database.DatabseManager.disconnect(dbConn)
+        pass
 
     @staticmethod
     def findAll():
         dbConn = Database.DatabseManager.connect()
         c = dbConn.cursor()
         c.execute(
-            "select GuidId,AnnounceChannelId,GameMessageId from AnnounceChannel;")
-        dbConn.commit()
+            "select GuildId,announce_channel_id,section_message_id from guild_settings;")
 
         rows = c.fetchall()
         res = []
         for row in rows:
-            res.append(AnnounceChannel.serialize(row))
+            res.append(GuildSettings.serialize(row))
         Database.DatabseManager.disconnect(dbConn)
         return res
 
@@ -56,21 +49,20 @@ class AnnounceChannel(Database.DatabseManager.DataBaseObject):
         dbConn = Database.DatabseManager.connect();
         c = dbConn.cursor()
         c.execute(
-            "select GuidId,AnnounceChannelId,GameMessageId from AnnounceChannel where GuidId = ? limit 1;",
+            "select GuildId,announce_channel_id,section_message_id from guild_settings where GuildId = %s limit 1;",
             (str(guild),))
-        dbConn.commit()
 
         res = c.fetchone()
         if res is None:
             return None
         Database.DatabseManager.disconnect(dbConn)
-        return AnnounceChannel.serialize(res)
+        return GuildSettings.serialize(res)
 
     @staticmethod
     def serialize(data):
-        res = AnnounceChannel()
+        res = GuildSettings()
         res.GuildId = data[0]
         res.AnnounceChannelId = data[1]
-        res.GameMessageId = data[2]
+        res.SectionMessageId = data[2]
 
         return res

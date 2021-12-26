@@ -5,11 +5,11 @@ from discord.ext import commands
 from discord_slash import SlashCommand
 from dotenv import load_dotenv
 
-from Database.GameRoleAllow import GameRoleAllow
+from Database.RoleAllowSection import RoleAllowSection
 from Utils import VoiceChannel
 from Commands import ReloadGameCommand
-from Database.AnnounceChannel import AnnounceChannel
-from Database.Games import Game
+from Database.GuildSettings import GuildSettings
+from Database.Games import Section
 from Database.DatabseManager import connect, disconnect
 from Utils.AnnounceGameChannel import autoCreateSectionAnnounceChannel, on_announce_game_message
 
@@ -34,13 +34,13 @@ async def on_ready():
     VoiceChannel.vocalCategory.start(client)
     await client.change_presence(activity=discord.Game(name="faire des frites", type=discord.ActivityType.playing))
     await ReloadGameCommand.reloadAllChannelAnnounce(client)
-    # await autoCreateSectionAnnounceChannel(client)
+    await autoCreateSectionAnnounceChannel(client)
 
 
 @client.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
-    announce: AnnounceChannel = AnnounceChannel.findOne(payload.guild_id)
-    if announce is None or announce.GameMessageId is None or payload.message_id != int(announce.GameMessageId):
+    announce: GuildSettings = GuildSettings.findOne(payload.guild_id)
+    if announce is None or announce.SectionMessageId is None or payload.message_id != int(announce.SectionMessageId):
         return
 
     guild: discord.Guild = client.get_guild(payload.guild_id)
@@ -49,20 +49,20 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     if user.bot:
         return
 
-    game: Game = Game.findOneByGuildEmoticon(announce.GuildId, payload.emoji._as_reaction())
+    game: Section = Section.findOneByGuildEmoticon(announce.GuildId, payload.emoji._as_reaction())
     channel: discord.TextChannel = guild.get_channel(payload.channel_id)
-    msg: discord.Message = await channel.fetch_message(int(announce.GameMessageId))
+    msg: discord.Message = await channel.fetch_message(int(announce.SectionMessageId))
 
     if game is None:
         await msg.remove_reaction(payload.emoji, user)
         return
 
     role: discord.Role = guild.get_role(int(game.roleId))
-    if game.restricted:
+    if game.visibility == "RESTRICT":
         listRole = []
         for r in user.roles:
             listRole.append(str(r.id))
-        if GameRoleAllow.findOneByGameRolesList(game.id, listRole) is None:
+        if RoleAllowSection.findOneByGameRolesList(game.id, listRole) is None:
             await msg.remove_reaction(payload.emoji, user)
             return
 
@@ -71,8 +71,8 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 @client.event
 async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
-    announce: AnnounceChannel = AnnounceChannel.findOne(payload.guild_id)
-    if announce is None or payload.message_id != int(announce.GameMessageId):
+    announce: GuildSettings = GuildSettings.findOne(payload.guild_id)
+    if announce is None or payload.message_id != int(announce.SectionMessageId):
         return
 
     guild: discord.Guild = client.get_guild(payload.guild_id)
@@ -81,7 +81,7 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
     if user.bot:
         return
 
-    game: Game = Game.findOneByGuildEmoticon(announce.GuildId, payload.emoji._as_reaction())
+    game: Section = Section.findOneByGuildEmoticon(announce.GuildId, payload.emoji._as_reaction())
 
     role: discord.Role = guild.get_role(int(game.roleId))
     await user.remove_roles(role)

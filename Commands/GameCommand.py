@@ -7,8 +7,8 @@ from discord_slash.model import SlashCommandOptionType
 
 from Commands import ReloadGameCommand
 from Database.AllowUserCommand import AllowUserCommand
-from Database.GameRoleAllow import GameRoleAllow
-from Database.Games import Game
+from Database.RoleAllowSection import RoleAllowSection
+from Database.Games import Section
 
 
 class GameCommand(commands.Cog):
@@ -83,8 +83,8 @@ class GameCommand(commands.Cog):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
             return
 
-        game = Game.findOneByName(name, ctx.guild.id)
-        if Game.findOneByName(name, ctx.guild.id) is None:
+        game = Section.findOneByName(name, ctx.guild.id)
+        if Section.findOneByName(name, ctx.guild.id) is None:
             print("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
@@ -127,32 +127,32 @@ class GameCommand(commands.Cog):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
             return
 
-        game = Game.findOneByName(name, ctx.guild.id)
-        if Game.findOneByName(name, ctx.guild.id) is None:
+        game = Section.findOneByName(name, ctx.guild.id)
+        if Section.findOneByName(name, ctx.guild.id) is None:
             print("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
 
-        if not game.restricted:
+        if game.visibility != "RESTRICT":
             print("[AddGame] " + name + " n'est pas en mode de restriction.")
             await ctx.send(content=("[AddGame] " + name + " n'est pas en mode de restriction."), hidden=True)
             return
 
         if allow:
-            if GameRoleAllow.findOneByGameRole(game.id, role.id) is not None:
+            if RoleAllowSection.findOneByGameRole(game.id, role.id) is not None:
                 await ctx.send(content=("[AddGame] pour " + name + " la restriction existe déjà."), hidden=True)
                 return
-            allow = GameRoleAllow()
+            allow = RoleAllowSection()
             allow.GameId = game.id
             allow.RoleId = role.id
-            GameRoleAllow.create(allow)
+            RoleAllowSection.create(allow)
         else:
-            allow = GameRoleAllow.findOneByGameRole(game.id, role.id)
+            allow = RoleAllowSection.findOneByGameRole(game.id, role.id)
             if allow is None:
                 await ctx.send(content=("[AddGame] pour " + name + " aucune restriction existe pour ce role."),
                                hidden=True)
                 return
-            GameRoleAllow.delete(allow)
+            RoleAllowSection.delete(allow)
 
         await ctx.send(content=("[AddGame] OK !."), hidden=True)
 
@@ -200,18 +200,17 @@ class GameCommand(commands.Cog):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
             return
 
-        if Game.findOneByName(name, ctx.guild.id) is not None:
+        if Section.findOneByName(name, ctx.guild.id) is not None:
             print("[AddGame] " + name + " existe déjà.")
             await ctx.send(content=("[AddGame] " + name + " existe déjà."), hidden=True)
             return
 
-        game: Game = Game()
+        game: Section = Section()
         game.name = name
         game.emoticon = emoticon
         game.memberIdCreate = ctx.author.id
         game.memberUsernameCreate = ctx.author.name
-        game.restricted = restricted
-        game.show = show
+        game.visibility = "HIDE" if show == False else ("RESTRICT" if restricted else "SHOW")
 
         guild: discord.Guild = ctx.guild
         game.guildId = guild.id
@@ -241,7 +240,7 @@ class GameCommand(commands.Cog):
         if voiceChannel is None:
             await guild.create_voice_channel("Vocal#1", category=category, sync_permissions=True)
 
-        Game.create(game)
+        Section.create(game)
         await ctx.send(content=("Ok ! <@&" + str(role.id) + ">"), hidden=True)
         await ReloadGameCommand.reloadChannelAnnounce(guild)
 
@@ -265,7 +264,7 @@ class GameCommand(commands.Cog):
             await ctx.send(content=("ERROR : Non autorisé !!!"), hidden=True)
             return
 
-        game: Game = Game.findOneByName(name, ctx.guild.id)
+        game: Section = Section.findOneByName(name, ctx.guild.id)
         if game is None:
             print("[RemoveGame] " + name + " n'existe pas.")
             await ctx.send(content=("[RemoveGame] " + name + " n'existe pas."), hidden=True)
@@ -285,7 +284,7 @@ class GameCommand(commands.Cog):
 
         await ctx.send(content=("Aurevoir ! " + game.name), hidden=True)
 
-        Game.delete(game)
+        Section.delete(game)
         await ReloadGameCommand.reloadChannelAnnounce(guild)
 
         return

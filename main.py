@@ -34,7 +34,7 @@ async def on_ready():
     VoiceChannel.vocalCategory.start(client)
     await client.change_presence(activity=discord.Game(name="faire des frites", type=discord.ActivityType.playing))
     await ReloadGameCommand.reloadAllChannelAnnounce(client)
-    # await autoCreateSectionAnnounceChannel(client)
+    # await autoCreateSectionAnnounceChannel(client) # Création tout les channels annonces
 
 
 @client.event
@@ -95,4 +95,5 @@ async def on_message(message: discord.Message):
 client.load_extension("Commands.GameCommand")
 client.load_extension("Commands.ReloadGameCommand")
 client.load_extension("Commands.AnnounceMessageCommand")
+client.load_extension("Commands.PlanningCommand")
 client.run(TOKEN)

@@ -9,6 +9,7 @@ from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
 
 from Database.PlanningScreen import PlanningScreen
+from LoggerSetup import logger
 
 
 class GameCommand(commands.Cog):
@@ -33,7 +34,7 @@ class GameCommand(commands.Cog):
         week = date[1]
         screen = PlanningScreen.findOne(week, year)
         if screen is None:
-            print("[Planning] Erreur : pas de screen pour " + str(week) + " " + str(year) + ".")
+            logger.WARN("[Planning] Erreur : pas de screen pour " + str(week) + " " + str(year) + ".")
             await ctx.send(content=("[Planning] pas de screen pour " + str(week) + " " + str(year) + "."), hidden=True)
             return
 
@@ -45,7 +46,7 @@ class GameCommand(commands.Cog):
                 newMessage = await ctx.author.send(
                     file=discord.File(image_binary, filename="ADE-" + str(week) + "_" + str(year) + ".png"))
                 await ctx.send(content="Envoyé par message privé.", hidden=True)
-                print("[Planning] Screen pour " + ctx.author.name + " du " + str(week) + "_" + str(year) + ".")
+                logger.WARN("[Planning] Screen pour " + ctx.author.name + " du " + str(week) + "_" + str(year) + ".")
 
                 dm = ctx.author.dm_channel
                 if (dm is None):

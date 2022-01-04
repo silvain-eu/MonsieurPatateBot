@@ -5,13 +5,14 @@ from discord.ext import commands
 from discord_slash import SlashCommand
 from dotenv import load_dotenv
 
-from Database.RoleAllowSection import RoleAllowSection
-from Utils import VoiceChannel
 from Commands import ReloadGameCommand
-from Database.GuildSettings import GuildSettings
-from Database.Games import Section
 from Database.DatabseManager import connect, disconnect
-from Utils.AnnounceGameChannel import autoCreateSectionAnnounceChannel, on_announce_game_message
+from Database.Games import Section
+from Database.GuildSettings import GuildSettings
+from Database.RoleAllowSection import RoleAllowSection
+from LoggerSetup import logger
+from Utils import VoiceChannel
+from Utils.AnnounceGameChannel import on_announce_game_message
 
 load_dotenv()
 TOKEN = os.getenv('token')
@@ -27,7 +28,7 @@ slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True, overri
 
 @client.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    logger.info(f'{client.user} has connected to Discord!')
 
     await slash.sync_all_commands(delete_from_unused_guilds=False)
     disconnect(connect())

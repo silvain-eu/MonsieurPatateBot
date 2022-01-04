@@ -6,6 +6,7 @@ from discord_slash import cog_ext, SlashCommandOptionType, SlashContext
 from discord_slash.utils.manage_commands import create_option
 
 from Database.Games import Section
+from LoggerSetup import logger
 
 
 async def autoCreateSectionAnnounceChannel(client: discord.Client):
@@ -69,6 +70,7 @@ async def on_announce_game_message(message: discord.Message, onlyAnnounceChannel
                                                                                               game.categoryId)),
                                                                                       position=0,
                                                                                       sync_permissions=True)
+                    logger.info("[Announce] Création d'un channel '📢annonce' pour " + message.guild.name + ".")
 
         member: discord.Member = await message.guild.fetch_member(message.author.id)
 
@@ -86,6 +88,11 @@ async def on_announce_game_message(message: discord.Message, onlyAnnounceChannel
             mention = mention + m.mention
 
         await ch.send(embed=embed, content=mention, )
+
+        logger.info(
+            "[Announce] 📢 Nouveau message d'annonce de " + member.display_name + " dans " + game.name + " pour " +
+            message.guild.name + ".")
+
         if len(message.attachments) > 0:
             await ch.send(files=[await f.to_file() for f in message.attachments])
 

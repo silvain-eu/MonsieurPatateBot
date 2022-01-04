@@ -1,3 +1,5 @@
+import logging
+
 import discord
 import typing
 from discord.ext import commands
@@ -9,6 +11,7 @@ from Commands import ReloadGameCommand
 from Database.AllowUserCommand import AllowUserCommand
 from Database.RoleAllowSection import RoleAllowSection
 from Database.Games import Section
+from LoggerSetup import logger
 
 
 class GameCommand(commands.Cog):
@@ -85,7 +88,7 @@ class GameCommand(commands.Cog):
 
         game = Section.findOneByName(name, ctx.guild.id)
         if Section.findOneByName(name, ctx.guild.id) is None:
-            print("[AddGame] " + name + " n'existe pas.")
+            logger.WARN("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
 
@@ -129,12 +132,12 @@ class GameCommand(commands.Cog):
 
         game = Section.findOneByName(name, ctx.guild.id)
         if Section.findOneByName(name, ctx.guild.id) is None:
-            print("[AddGame] " + name + " n'existe pas.")
+            logger.WARN("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
 
         if game.visibility != "RESTRICT":
-            print("[AddGame] " + name + " n'est pas en mode de restriction.")
+            logger.WARN("[AddGame] " + name + " n'est pas en mode de restriction.")
             await ctx.send(content=("[AddGame] " + name + " n'est pas en mode de restriction."), hidden=True)
             return
 
@@ -201,7 +204,7 @@ class GameCommand(commands.Cog):
             return
 
         if Section.findOneByName(name, ctx.guild.id) is not None:
-            print("[AddGame] " + name + " existe déjà.")
+            logger.WARN("[AddGame] " + name + " existe déjà.")
             await ctx.send(content=("[AddGame] " + name + " existe déjà."), hidden=True)
             return
 
@@ -266,7 +269,7 @@ class GameCommand(commands.Cog):
 
         game: Section = Section.findOneByName(name, ctx.guild.id)
         if game is None:
-            print("[RemoveGame] " + name + " n'existe pas.")
+            logger.WARN("[RemoveGame] " + name + " n'existe pas.")
             await ctx.send(content=("[RemoveGame] " + name + " n'existe pas."), hidden=True)
             return
 

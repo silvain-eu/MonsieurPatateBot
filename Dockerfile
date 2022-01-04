@@ -14,5 +14,6 @@ COPY Utils ./Utils/
 ENV token ""
 ENV clientId ""
 ENV voiceCategoryName "Salons vocaux"
+ENV TZ="Europe/Paris"
 
 CMD [ "python", "-u", "./main.py" ]

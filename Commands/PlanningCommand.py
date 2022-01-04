@@ -34,7 +34,7 @@ class GameCommand(commands.Cog):
         week = date[1]
         screen = PlanningScreen.findOne(week, year)
         if screen is None:
-            logger.WARN("[Planning] Erreur : pas de screen pour " + str(week) + " " + str(year) + ".")
+            logger.warn("[Planning] Erreur : pas de screen pour " + str(week) + " " + str(year) + ".")
             await ctx.send(content=("[Planning] pas de screen pour " + str(week) + " " + str(year) + "."), hidden=True)
             return
 
@@ -46,7 +46,7 @@ class GameCommand(commands.Cog):
                 newMessage = await ctx.author.send(
                     file=discord.File(image_binary, filename="ADE-" + str(week) + "_" + str(year) + ".png"))
                 await ctx.send(content="Envoyé par message privé.", hidden=True)
-                logger.WARN("[Planning] Screen pour " + ctx.author.name + " du " + str(week) + "_" + str(year) + ".")
+                logger.info("[Planning] Screen pour " + ctx.author.name + " du " + str(week) + "_" + str(year) + ".")
 
                 dm = ctx.author.dm_channel
                 if (dm is None):

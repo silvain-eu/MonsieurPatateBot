@@ -86,7 +86,7 @@ class GameCommand(commands.Cog):
 
         game = Section.findOneByName(name, ctx.guild.id)
         if Section.findOneByName(name, ctx.guild.id) is None:
-            logger.WARN("[AddGame] " + name + " n'existe pas.")
+            logger.warn("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
 
@@ -130,12 +130,12 @@ class GameCommand(commands.Cog):
 
         game = Section.findOneByName(name, ctx.guild.id)
         if Section.findOneByName(name, ctx.guild.id) is None:
-            logger.WARN("[AddGame] " + name + " n'existe pas.")
+            logger.warn("[AddGame] " + name + " n'existe pas.")
             await ctx.send(content=("[AddGame] " + name + " n'existe pas."), hidden=True)
             return
 
         if game.visibility != "RESTRICT":
-            logger.WARN("[AddGame] " + name + " n'est pas en mode de restriction.")
+            logger.warn("[AddGame] " + name + " n'est pas en mode de restriction.")
             await ctx.send(content=("[AddGame] " + name + " n'est pas en mode de restriction."), hidden=True)
             return
 
@@ -202,7 +202,7 @@ class GameCommand(commands.Cog):
             return
 
         if Section.findOneByName(name, ctx.guild.id) is not None:
-            logger.WARN("[AddGame] " + name + " existe déjà.")
+            logger.warn("[AddGame] " + name + " existe déjà.")
             await ctx.send(content=("[AddGame] " + name + " existe déjà."), hidden=True)
             return
 
@@ -267,7 +267,7 @@ class GameCommand(commands.Cog):
 
         game: Section = Section.findOneByName(name, ctx.guild.id)
         if game is None:
-            logger.WARN("[RemoveGame] " + name + " n'existe pas.")
+            logger.warn("[RemoveGame] " + name + " n'existe pas.")
             await ctx.send(content=("[RemoveGame] " + name + " n'existe pas."), hidden=True)
             return
 

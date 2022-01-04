@@ -10,7 +10,7 @@ from Database.DatabseManager import connect, disconnect
 from Database.Games import Section
 from Database.GuildSettings import GuildSettings
 from Database.RoleAllowSection import RoleAllowSection
-from LoggerSetup import logger
+from Utils.LoggerSetup import logger
 from Utils import VoiceChannel
 from Utils.AnnounceGameChannel import on_announce_game_message
 

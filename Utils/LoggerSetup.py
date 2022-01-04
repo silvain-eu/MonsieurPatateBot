@@ -24,4 +24,4 @@ def log_setup(path: str):
 
 
 global logger
-logger = log_setup("var/log/bot.log")
+logger = log_setup("../var/log/bot.log")

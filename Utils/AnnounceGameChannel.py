@@ -1,12 +1,9 @@
 import typing
 
 import discord
-from discord.ext import commands
-from discord_slash import cog_ext, SlashCommandOptionType, SlashContext
-from discord_slash.utils.manage_commands import create_option
 
 from Database.Games import Section
-from LoggerSetup import logger
+from Utils.LoggerSetup import logger
 
 
 async def autoCreateSectionAnnounceChannel(client: discord.Client):

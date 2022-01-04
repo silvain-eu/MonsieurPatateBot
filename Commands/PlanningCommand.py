@@ -9,7 +9,7 @@ from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
 
 from Database.PlanningScreen import PlanningScreen
-from LoggerSetup import logger
+from Utils.LoggerSetup import logger
 
 
 class GameCommand(commands.Cog):

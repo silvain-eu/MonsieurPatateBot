@@ -1,11 +1,9 @@
 import traceback
 from abc import ABC, abstractmethod
-import sqlite3
 import mysql.connector
 import os
-from datetime import datetime
 
-from LoggerSetup import logger
+from Utils.LoggerSetup import logger
 
 
 class DataBaseObject(ABC):

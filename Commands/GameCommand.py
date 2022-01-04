@@ -1,9 +1,7 @@
-import logging
-
 import discord
 import typing
 from discord.ext import commands
-from discord_slash import cog_ext, SlashContext, SlashCommand
+from discord_slash import cog_ext, SlashContext
 from discord_slash.utils.manage_commands import create_option
 from discord_slash.model import SlashCommandOptionType
 
@@ -11,7 +9,7 @@ from Commands import ReloadGameCommand
 from Database.AllowUserCommand import AllowUserCommand
 from Database.RoleAllowSection import RoleAllowSection
 from Database.Games import Section
-from LoggerSetup import logger
+from Utils.LoggerSetup import logger
 
 
 class GameCommand(commands.Cog):

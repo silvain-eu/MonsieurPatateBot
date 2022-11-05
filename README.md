@@ -29,9 +29,6 @@ L'application est déployé à travers une image docker publié sur un dépôt p
 - Récupérer les captures d'écran réalisé par le projet [MonsieurPatatePlanning](https://github.com/silvainlud/MonsieurPatatePlanning)
 - Ajouter une commande "SLASH" à un serveur discord pour consulter ces captures
 
-
-## Installation de l'environnement de développement
-
 ## Installation de l'environnement de développement
 
 ### Pré-requis

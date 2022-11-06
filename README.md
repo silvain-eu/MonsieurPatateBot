@@ -6,8 +6,8 @@
 
 <h1 align="center">Monsieur Patate Bot</h1>
 <p align="center">
- <a href="https://drone.silvain.eu/Silvain.eu/MonsieurPatatePhp">
-  <img src="https://drone.silvain.eu/api/badges/Silvain.eu/MonsieurPatatePhp/status.svg"/>
+ <a href="https://drone.silvain.eu/Silvain.eu/MonsieurPatateBot">
+  <img src="https://drone.silvain.eu/api/badges/Silvain.eu/MonsieurPatateBot/status.svg"/>
  </a>
 </p>
 
